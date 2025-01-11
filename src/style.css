@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  padding: 10px;
+}
+
+.imagecontainer {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+
+  .linecanvas,
+  .refimage {
+    width: calc(50vw - 15px);
+  }
+}
