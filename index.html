@@ -8,10 +8,12 @@
   </head>
   <body>
     <div id="app">
-      <h1>Lines</h1>
       <div class="imagecontainer">
-        <img class="refimage" src="/example.jpg" alt="Example image" id="refimage" />
+        <canvas class="refcanvas" id="refcanvas"></canvas>
         <canvas class="linecanvas" id="linecanvas"></canvas>
+      </div>
+      <div id="controls">
+        <input type="file" id="fileinput" accept="image/*" />
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>

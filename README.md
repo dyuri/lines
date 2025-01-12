@@ -1,5 +1,5 @@
 # lines
-Clone image with lines
+Clone image with random lines
 
 ![Example](./lines_example.jpg)
 

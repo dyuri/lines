@@ -83,38 +83,49 @@ function drawLineIfImproves(ctx: CanvasRenderingContext2D, refctx: CanvasRenderi
   }
 }
 
-export function setupSimpleLineDrawer(canvas: HTMLCanvasElement, refImage: HTMLImageElement, monochrome: boolean = false) {
-  let drawerRunning = false;
-  const refcanvas = document.createElement('canvas');
-  refcanvas.width = refImage.width;
-  refcanvas.height = refImage.height;
-  // DEBUG document.querySelector('.imagecontainer')!.appendChild(refcanvas);
-
-  const refctx = refcanvas.getContext('2d', { willReadFrequently: true })!;
-  refctx.drawImage(refImage, 0, 0, refImage.width, refImage.height);
+function initCanvas(canvas: HTMLCanvasElement, refcanvas: HTMLCanvasElement) {
+  canvas.width = refcanvas.width;
+  canvas.height = refcanvas.height;
 
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-  canvas.width = refImage.width;
-  canvas.height = refImage.height;
+  ctx.fillStyle = 'rgb(128, 128, 128)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+};
+
+export function setupSimpleLineDrawer(canvas: HTMLCanvasElement, refcanvas: HTMLCanvasElement, monochrome: boolean = false) {
+  let drawerRunning = false;
+
+  initCanvas(canvas, refcanvas);
+
+  refcanvas.addEventListener('imageLoaded', () => {
+    initCanvas(canvas, refcanvas);
+  });
+
+  const refctx = refcanvas.getContext('2d', { willReadFrequently: true })!;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
+
   let lines = 0;
   let startTime = Date.now();
 
-  ctx.fillStyle = 'rgb(128, 128, 128)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  let updateLines = () => {};
-
-  // canvas click: start/stop drawing until next click
-  canvas.addEventListener('click', () => {
-    drawerRunning = !drawerRunning;
-    if (drawerRunning) {
-      startTime = Date.now();
-      lines = 0;
-      updateLines();
-    } else {
-      console.log(`Drew ${lines} lines in ${(Date.now() - startTime)/1000}s`);
+  let updateLines = () => {
+    if (!drawerRunning) {
+      return;
     }
-  });
+
+    lines++;
+
+    const x0 = Math.ceil(Math.random() * canvas.width);
+    const y0 = Math.ceil(Math.random() * canvas.height);
+    const x1 = Math.ceil(Math.random() * canvas.width);
+    const y1 = Math.ceil(Math.random() * canvas.height);
+    const red = Math.random() * 255;
+    const green = monochrome ? red : Math.random() * 255;
+    const blue = monochrome ? red : Math.random() * 255
+
+    drawLineIfImproves(ctx, refctx, x0, y0, x1, y1, { r: red, g: green, b: blue });
+
+    setTimeout(updateLines, 0);
+  };
 
   // @ts-expect-error: scheduler is pretty new
   if (window.scheduler) {
@@ -136,25 +147,18 @@ export function setupSimpleLineDrawer(canvas: HTMLCanvasElement, refImage: HTMLI
         await scheduler.yield(); // about twice as fast as setTimeout, but still slow
       }
     }
-  } else {
-    updateLines = () => {
-      if (!drawerRunning) {
-        return;
-      }
-
-      lines++;
-
-      const x0 = Math.ceil(Math.random() * canvas.width);
-      const y0 = Math.ceil(Math.random() * canvas.height);
-      const x1 = Math.ceil(Math.random() * canvas.width);
-      const y1 = Math.ceil(Math.random() * canvas.height);
-      const red = Math.random() * 255;
-      const green = monochrome ? red : Math.random() * 255;
-      const blue = monochrome ? red : Math.random() * 255
-
-      drawLineIfImproves(ctx, refctx, x0, y0, x1, y1, { r: red, g: green, b: blue });
-
-      setTimeout(updateLines, 0);
-    }
   }
+
+  // canvas click: start/stop drawing until next click
+  canvas.addEventListener('click', () => {
+    drawerRunning = !drawerRunning;
+    if (drawerRunning) {
+      startTime = Date.now();
+      lines = 0;
+      updateLines();
+    } else {
+      const deltaTime = (Date.now() - startTime)/1000;
+      console.log(`Drew ${lines} lines in ${deltaTime}s (${(lines/deltaTime).toFixed(2)} l/s)`);
+    }
+  });
 }

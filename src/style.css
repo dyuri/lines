@@ -6,10 +6,24 @@ body {
 .imagecontainer {
   display: flex;
   flex-wrap: nowrap;
+  justify-content: center;
   gap: 10px;
 
   .linecanvas,
-  .refimage {
-    width: calc(50vw - 15px);
+  .refcanvas {
+    max-width: calc(50vw - 15px);
+    max-height: calc(100vh - 20px);
+  }
+}
+
+@media (orientation: portrait) {
+  .imagecontainer {
+    flex-direction: column;
+
+    .linecanvas,
+    .refcanvas {
+      max-width: calc(100vw - 20px);
+      max-height: calc(50vh - 15px);
+    }
   }
 }

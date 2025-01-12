@@ -1,0 +1,5 @@
+- image d&d to ref canvas => image upload
+- mono/color switch
+- dark/light mode
+- resize observer
+- imgData size optimization
