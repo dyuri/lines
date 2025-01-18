@@ -52,3 +52,17 @@ export function handleUploadImage(canvas: HTMLCanvasElement, fileInput: HTMLInpu
     }
   });
 }
+
+export function handleImageDrop(canvas: HTMLCanvasElement) {
+  canvas.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
+
+  canvas.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      uploadImageToCanvas(canvas, file);
+    }
+  });
+}
