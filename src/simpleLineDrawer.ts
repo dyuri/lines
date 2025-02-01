@@ -88,7 +88,7 @@ function initCanvas(canvas: HTMLCanvasElement, refcanvas: HTMLCanvasElement) {
   canvas.height = refcanvas.height;
 
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-  ctx.fillStyle = 'rgb(128, 128, 128)';
+  ctx.fillStyle = 'rgb(128, 128, 128, 0)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
 

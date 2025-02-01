@@ -1,5 +1,8 @@
-- mono/color switch
-- dark/light mode
+- webcomponent
+- toolbar:
+  - switch: mono/color
+  - switch: opacity to .8 or something
+  - upload button
+  - dark/light mode
 - resize observer
 - imgData size optimization
-- image over ref (or something similar)
